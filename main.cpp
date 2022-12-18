@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <iostream>
+
 using namespace sf;
 
 class pilka {
@@ -30,6 +31,16 @@ public:
 	sf::Vector2f getPos() { return Odbijacz.getPosition(); }
 
 };
+class pudelka {
+private:
+	sf::Vector2f position;
+	sf::RectangleShape pudelko;
+public:
+	pudelka(float x_in, float y_in);
+	sf::RectangleShape getPudelko() { return pudelko; }
+	sf::Vector2f getPos() { return pudelko.getPosition(); }
+
+};
 pilka::pilka(float x_in, float y_in)
 {	position.x = x_in;
 	position.y = y_in;
@@ -43,7 +54,16 @@ pilka::pilka(float x_in, float y_in)
 
 	HB.setPosition(position);
 }
+pudelka::pudelka(float x_in, float y_in)
+{
+	position.x = x_in;
+	position.y = y_in;
+	sf::Vector2f(100, 100);
+	pudelko.setSize(sf::Vector2f(30,40));
+	pudelko.setFillColor(sf::Color::Yellow);
+	pudelko.setPosition(position);
 
+}
 podloga::podloga(float x_in, float y_in)
 {
 	position.x = x_in;
@@ -76,9 +96,10 @@ int main()
 	RenderWindow window(VideoMode{ 800, 600 }, "Gra");
 	pilka p1(400, 300);
 	podloga d1(350, 500);
+	pudelka pd1(700, 500);
 	int dx = 10, dy = 10;
-	int dx1 = 5, dy1 = 0;
-	
+	int dx1 = 10, dy1 = 0;
+
 	sf::Clock zegar;
 
 
@@ -95,45 +116,52 @@ int main()
 		if (zegar.getElapsedTime().asMilliseconds() > 30.0f) {
 
 			if (zegar.getElapsedTime().asMilliseconds() > 30.0f)
- {
+			{
 
-			
-					if (p1.getPos().x > window.getSize().x -30 || p1.getPos().x  < 0)
 
-						dx = -dx;
-			
-					if (p1.getPos().y > window.getSize().y -40|| p1.getPos().y  < 0)
-						dy = -dy;
+				if (p1.getPos().x > window.getSize().x - 30 || p1.getPos().x < 0)
+
+					dx = -dx;
+
+				if (p1.getPos().y > window.getSize().y - 40 || p1.getPos().y < 0)
+					dy = -dy;
+				
+				if ((d1.getPos().x + 70 > p1.getPos().x)&& (p1.getPos().x > d1.getPos().x - 70) && ( d1.getPos().y - 30<p1.getPos().y))
+				{
+					dx = -dx;
+					dy = -dy;
+		
+				}
 				p1.przesun(dx, dy);
 				zegar.restart();
 			}
-	
-				
-					if (sf::Keyboard::isKeyPressed (sf::Keyboard::Key::A))
-					{
-						d1.przesun1(-dx1, dy1);
-					}
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-					{
-						d1.przesun1(dx1, dy1);
-					}
-					
-			
-				
-					if (box1.intersects(pilka))
+
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 			{
-				dx = -dx;
-				dy = dy;
+				if (d1.getPos().x < 0)
+					d1.przesun1(0, 0);
+				else
+				
+				d1.przesun1(-dx1, dy1);
+			
 			}
-		
-		
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+			{
+				if (d1.getPos().x > window.getSize().x - 30)
+					d1.przesun1(0, 0);
+				else
+				d1.przesun1(dx1, dy1);
+				
+			}
 
-
-			window.clear(sf::Color::White);
-			window.clear(sf::Color::Black);
-			window.draw(p1.getPilka());
-			window.draw(d1.getPodloga());
-			window.display();
+	
+				window.clear(sf::Color::White);
+				window.clear(sf::Color::Black);
+				window.draw(p1.getPilka());
+				window.draw(d1.getPodloga());
+				window.draw(pd1.getPudelko());
+				window.display();
+			}
 		}
 	}
-}
